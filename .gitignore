@@ -1,0 +1,29 @@
+#files being edited
+*~
+
+
+# make and build files
+*.lst
+*.o
+*.so
+*.eep
+*.lss
+*.map
+*.sym
+
+# Resources
+*.bmp
+*.ttf
+
+# Other things
+.vscode
+*.code-workspace
+*.directory
+.yardoc
+tmp
+ext/Ruby-Fmod/ruby
+ext/Ruby-Fmod/ruby.h
+yard/doc
+yard/*.html
+mkmf.log
+pkg/Ruby-Fmod-0.1.0/*
