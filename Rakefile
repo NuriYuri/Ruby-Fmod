@@ -1,4 +1,4 @@
-ext_name = 'Ruby-Fmod'
+ext_name = 'RubyFmod'
 require 'rake/extensiontask'
 
 spec = Gem::Specification.new do |s|
