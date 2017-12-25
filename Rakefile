@@ -9,8 +9,8 @@ spec = Gem::Specification.new do |s|
   s.description = "Ruby-Fmod uses Fmod to work properly"
   s.authors = ["Nuri Yuri"]
   #s.homepage = "https://psdk.pokemonworkshop.com/litergss"
-  s.extensions = FileList["ext/Ruby-Fmod/extconf.rb"]
-  s.files = FileList["ext/Ruby-Fmod/*.h", "ext/Ruby-Fmod/*.cpp"]
+  s.extensions = FileList["ext/RubyFmod/extconf.rb"]
+  s.files = FileList["ext/RubyFmod/*.h", "ext/RubyFmod/*.cpp"]
   s.metadata    = { "source_code_uri" => "https://github.com/NuriYuri/Ruby-Fmod" }
 end
 

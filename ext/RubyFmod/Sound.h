@@ -4,7 +4,7 @@
 VALUE rb_Sound_getDefaults(VALUE self);
 VALUE rb_Sound_getFormat(VALUE self);
 VALUE rb_Sound_getLength(VALUE self, VALUE timeunit);
-VALUE rb_Sound_getLength(VALUE self);
+VALUE rb_Sound_getLoopCount(VALUE self);
 VALUE rb_Sound_getLoopPoints(VALUE self, VALUE startunit, VALUE stopunit);
 VALUE rb_Sound_getMode(VALUE self);
 VALUE rb_Sound_getMusicChannelVolume(VALUE self, VALUE channelid);

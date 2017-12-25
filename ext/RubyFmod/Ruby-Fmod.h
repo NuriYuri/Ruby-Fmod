@@ -20,8 +20,11 @@ extern VALUE rb_cFmodChannel;
 extern VALUE rb_eFmodError;
 
 extern FMOD::System* FmodSystem;
+extern ID current_sound;
 
 void Init_System();
+void Init_Sound();
+void Init_Channel();
 
 inline long normalize_long(long value, long min, long max) {
     if(value < min)
@@ -43,4 +46,21 @@ inline VALUE rb_FmodRaiseError(FMOD_RESULT hr) {
     rb_raise(rb_class_new_instance(1, &argv, rb_eFmodError), "FmodError %d : %s", hr, FMOD_ErrorString(hr));
     return Qnil;
 }
+
+#define CHECK_ERROR \
+    if(hr != FMOD_RESULT::FMOD_OK) \
+        return rb_FmodRaiseError(hr); \
+
+#define GET_SOUND(object, varname) \
+    FMOD::Sound* varname; \
+    Data_Get_Struct(object, FMOD::Sound, varname);
+
+#define SET_DATA(object, varname) \
+    rb_check_type(object, T_DATA); \
+    RDATA(object)->data = reinterpret_cast<void*>(varname);
+
+#define GET_CHANNEL(object, varname) \
+    FMOD::Channel* varname; \
+    Data_Get_Struct(object, FMOD::Channel, varname);
+
 #endif

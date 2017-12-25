@@ -14,6 +14,7 @@
 # Resources
 *.bmp
 *.ttf
+*.mp3
 
 # Other things
 .vscode
@@ -21,9 +22,9 @@
 *.directory
 .yardoc
 tmp
-ext/Ruby-Fmod/ruby
-ext/Ruby-Fmod/ruby.h
+ext/RubyFmod/ruby
+ext/RubyFmod/ruby.h
 yard/doc
 yard/*.html
 mkmf.log
-pkg/Ruby-Fmod-0.1.0/*
+pkg/RubyFmod-0.1.0/*

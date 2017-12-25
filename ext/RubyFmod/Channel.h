@@ -1,7 +1,7 @@
 #ifndef L_CHANNEL_HEADER
 #define L_CHANNEL_HEADER
 
-VALUE rb_Channel_addFadePoint(VALUE self, VALUE dpsclock, VALUE volume);
+VALUE rb_Channel_addFadePoint(VALUE self, VALUE dspclock, VALUE volume);
 VALUE rb_Channel_getCurrentSound(VALUE self);
 VALUE rb_Channel_getDSPClock(VALUE self);
 VALUE rb_Channel_getFrequency(VALUE self);
@@ -21,7 +21,7 @@ VALUE rb_Channel_getVolumeRamp(VALUE self);
 VALUE rb_Channel_isPlaying(VALUE self);
 VALUE rb_Channel_isVirtual(VALUE self);
 VALUE rb_Channel_removeFadePoints(VALUE self, VALUE dspclock_start, VALUE dspclock_end);
-VALUE rb_Channel_setDelay(VALUE self, VALUE dpsclock_start, VALUE dspclock_end, VALUE stopchannels);
+VALUE rb_Channel_setDelay(VALUE self, VALUE dspclock_start, VALUE dspclock_end, VALUE stopchannels);
 VALUE rb_Channel_setFadePointRamp(VALUE self, VALUE dspclock, VALUE volume);
 VALUE rb_Channel_setFrequency(VALUE self, VALUE frequency);
 VALUE rb_Channel_setLoopCount(VALUE self, VALUE loopcount);
