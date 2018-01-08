@@ -458,8 +458,8 @@ VALUE rb_System_setSoftwareFormat(VALUE self, VALUE samplerate, VALUE speakermod
 VALUE rb_System_setStreamBufferSize(VALUE self, VALUE filebuffersize, VALUE filebuffersizetype)
 {
     FMOD_RESULT hr = FmodSystem->setStreamBufferSize(
-        rb_num2uint(filebuffersize),
-        rb_num2uint(filebuffersizetype)
+        RB_NUM2UINT(filebuffersize),
+        RB_NUM2UINT(filebuffersizetype)
     );
     CHECK_ERROR
     return self;

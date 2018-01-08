@@ -363,7 +363,7 @@ VALUE rb_Sound_release(VALUE self) // Is the subsound released ?
 VALUE rb_Sound_seekData(VALUE self, VALUE pcmoffset)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->seekData(rb_num2uint(pcmoffset));
+    FMOD_RESULT hr = fsound->seekData(RB_NUM2UINT(pcmoffset));
     CHECK_ERROR
     return self;
 }
@@ -388,9 +388,9 @@ VALUE rb_Sound_setLoopPoints(VALUE self, VALUE start, VALUE startunit, VALUE sto
 {
     GET_SOUND_SAFE
     FMOD_RESULT hr = fsound->setLoopPoints(
-        rb_num2uint(start),
+        RB_NUM2UINT(start),
         rb_num2long(startunit),
-        rb_num2uint(stop),
+        RB_NUM2UINT(stop),
         rb_num2long(stopunit)
     );
     CHECK_ERROR

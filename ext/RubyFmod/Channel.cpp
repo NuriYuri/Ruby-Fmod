@@ -118,9 +118,9 @@ VALUE rb_Channel_getLoopPoints(VALUE self, VALUE startunit, VALUE stopunit)
     unsigned int start, end;
     FMOD_RESULT hr = fchannel->getLoopPoints(
         &start,
-        rb_num2int(startunit),
+        RB_NUM2INT(startunit),
         &end,
-        rb_num2int(stopunit)
+        RB_NUM2INT(stopunit)
     );
     CHECK_ERROR
     VALUE return_value = rb_ary_new();
@@ -178,7 +178,7 @@ VALUE rb_Channel_getPosition(VALUE self, VALUE unit)
 {
     GET_CHANNEL_SAFE
     unsigned int position;
-    FMOD_RESULT hr = fchannel->getPosition(&position, rb_num2int(unit));
+    FMOD_RESULT hr = fchannel->getPosition(&position, RB_NUM2INT(unit));
     CHECK_ERROR
     return RB_UINT2NUM(position);
 }
@@ -196,7 +196,7 @@ VALUE rb_Channel_getReverbProperties(VALUE self, VALUE instance)
 {
     GET_CHANNEL_SAFE
     float wet;
-    FMOD_RESULT hr = fchannel->getReverbProperties(rb_num2int(instance), &wet);
+    FMOD_RESULT hr = fchannel->getReverbProperties(RB_NUM2INT(instance), &wet);
     CHECK_ERROR
     return rb_float_new(wet);
 }
@@ -282,7 +282,7 @@ VALUE rb_Channel_setFrequency(VALUE self, VALUE frequency)
 VALUE rb_Channel_setLoopCount(VALUE self, VALUE loopcount)
 {
     GET_CHANNEL_SAFE
-    FMOD_RESULT hr = fchannel->setLoopCount(rb_num2int(loopcount));
+    FMOD_RESULT hr = fchannel->setLoopCount(RB_NUM2INT(loopcount));
     CHECK_ERROR
     return self;
 }
@@ -291,10 +291,10 @@ VALUE rb_Channel_setLoopPoints(VALUE self, VALUE start, VALUE startunit, VALUE s
 {
     GET_CHANNEL_SAFE
     FMOD_RESULT hr = fchannel->setLoopPoints(
-        rb_num2uint(start),
-        rb_num2int(startunit),
-        rb_num2uint(stop),
-        rb_num2int(stopunit)
+        RB_NUM2UINT(start),
+        RB_NUM2INT(startunit),
+        RB_NUM2UINT(stop),
+        RB_NUM2INT(stopunit)
     );
     CHECK_ERROR
     return self;
@@ -311,7 +311,7 @@ VALUE rb_Channel_setLowPassGain(VALUE self, VALUE gain)
 VALUE rb_Channel_setMode(VALUE self, VALUE mode)
 {
     GET_CHANNEL_SAFE
-    FMOD_RESULT hr = fchannel->setMode(rb_num2int(mode));
+    FMOD_RESULT hr = fchannel->setMode(RB_NUM2INT(mode));
     CHECK_ERROR
     return self;
 }
@@ -352,8 +352,8 @@ VALUE rb_Channel_setPosition(VALUE self, VALUE position, VALUE unit)
 {
     GET_CHANNEL_SAFE
     FMOD_RESULT hr = fchannel->setPosition(
-        rb_num2uint(position),
-        rb_num2int(unit)
+        RB_NUM2UINT(position),
+        RB_NUM2INT(unit)
     );
     CHECK_ERROR
     return self;
@@ -362,7 +362,7 @@ VALUE rb_Channel_setPosition(VALUE self, VALUE position, VALUE unit)
 VALUE rb_Channel_setPriority(VALUE self, VALUE priority)
 {
     GET_CHANNEL_SAFE
-    FMOD_RESULT hr = fchannel->setPriority(rb_num2int(priority));
+    FMOD_RESULT hr = fchannel->setPriority(RB_NUM2INT(priority));
     CHECK_ERROR
     return self;
 }
@@ -371,7 +371,7 @@ VALUE rb_Channel_setReverbProperties(VALUE self, VALUE instance, VALUE wet)
 {
     GET_CHANNEL_SAFE
     FMOD_RESULT hr = fchannel->setReverbProperties(
-        rb_num2int(instance),
+        RB_NUM2INT(instance),
         static_cast<float>(rb_num2dbl(wet))
     );
     CHECK_ERROR
