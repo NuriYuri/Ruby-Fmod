@@ -10,6 +10,7 @@
 #include "System.h"
 #include "Sound.h"
 #include "Channel.h"
+#include "ExInfo.h"
 
 #define _rbf (VALUE (*)(...))
 
@@ -18,6 +19,7 @@ extern VALUE rb_mFmodSystem;
 extern VALUE rb_cFmodSound;
 extern VALUE rb_cFmodChannel;
 extern VALUE rb_eFmodError;
+extern VALUE rb_cFmodExInfo;
 
 extern FMOD::System* FmodSystem;
 extern ID current_sound;
@@ -25,6 +27,7 @@ extern ID current_sound;
 void Init_System();
 void Init_Sound();
 void Init_Channel();
+void Init_SoundEx();
 
 inline long normalize_long(long value, long min, long max) {
     if(value < min)

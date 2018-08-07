@@ -51,6 +51,7 @@ void Init_Sound()
     rb_define_method(rb_cFmodSound, "setMusicSpeed", _rbf rb_Sound_setMusicSpeed, 1);
     subsound_table = rb_intern("@subsound_table");
     subsound_parent = rb_intern("@parent");
+    Init_SoundEx();
 }
 
 

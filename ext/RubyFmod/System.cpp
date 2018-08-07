@@ -56,12 +56,11 @@ VALUE rb_System_create_Sound(VALUE self, VALUE filename, VALUE mode, VALUE extin
     VALUE sound = rb_class_new_instance(0, NULL, rb_cFmodSound);
     rb_ivar_set(sound, Sound_ivData, filename);
     rb_check_type(sound, T_DATA);
-    if(false) //rb_obj_is_kind_of(extinfo, rb_cFmodCREATESOUNDEXINFO))
-    {
-        FMOD_CREATESOUNDEXINFO extrainfo;
-        // Copy the extra infos
-        // rb_CREATESOUNDEXINFO_copy(extinfo, &extrainfo)
-        hr = FmodSystem->createSound(RSTRING_PTR(filename), rb_num2long(mode), &extrainfo, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+	if (rb_obj_is_kind_of(extinfo, rb_cFmodExInfo) == Qtrue)
+	{
+		FMOD_CREATESOUNDEXINFO* exinfo2;
+		Data_Get_Struct(extinfo, FMOD_CREATESOUNDEXINFO, exinfo2);
+        hr = FmodSystem->createSound(RSTRING_PTR(filename), rb_num2long(mode), exinfo2, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
     }
     else
         hr = FmodSystem->createSound(RSTRING_PTR(filename), rb_num2long(mode), NULL, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
@@ -76,12 +75,11 @@ VALUE rb_System_create_Stream(VALUE self, VALUE filename, VALUE mode, VALUE exti
     VALUE sound = rb_class_new_instance(0, NULL, rb_cFmodSound);
     rb_ivar_set(sound, Sound_ivData, filename);
     rb_check_type(sound, T_DATA);
-    if(false) //rb_obj_is_kind_of(extinfo, rb_cFmodCREATESOUNDEXINFO))
-    {
-        FMOD_CREATESOUNDEXINFO extrainfo;
-        // Copy the extra infos
-        // rb_CREATESOUNDEXINFO_copy(extinfo, &extrainfo)
-        hr = FmodSystem->createStream(RSTRING_PTR(filename), rb_num2long(mode), &extrainfo, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+	if (rb_obj_is_kind_of(extinfo, rb_cFmodExInfo) == Qtrue)
+	{
+		FMOD_CREATESOUNDEXINFO* exinfo2;
+		Data_Get_Struct(extinfo, FMOD_CREATESOUNDEXINFO, exinfo2);
+        hr = FmodSystem->createStream(RSTRING_PTR(filename), rb_num2long(mode), exinfo2, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
     }
     else
         hr = FmodSystem->createStream(RSTRING_PTR(filename), rb_num2long(mode), NULL, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
