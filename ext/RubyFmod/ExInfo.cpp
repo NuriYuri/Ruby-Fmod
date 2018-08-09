@@ -1,6 +1,6 @@
 #include "Ruby-Fmod.h"
 
-VALUE rb_cFmodExInfo = NULL;
+VALUE rb_cFmodExInfo = Qnil;
 
 #define GET_EXINFO_SAFE \
     GET_EXINFO(self, exinfo) \
