@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Ruby-Fmod.h"
 
 VALUE rb_cFmodExInfo = NULL;
 
