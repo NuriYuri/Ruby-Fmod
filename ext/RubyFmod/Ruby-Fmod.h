@@ -1,18 +1,17 @@
 #ifndef RF_RUBY_FMOD_H
 #define RF_RUBY_FMOD_H
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cmath>
 #include "ruby.h"
-#include <fmod.hpp>
+#include <fmod.h>
 #include <fmod_errors.h>
 #include "System.h"
 #include "Sound.h"
 #include "Channel.h"
 #include "ExInfo.h"
 
-#define _rbf (VALUE (*)(...))
+#define _rbf //(VALUE (*)(...))
+
+#define C_TRUE 1
+#define C_FALSE 0
 
 extern VALUE rb_mFmod;
 extern VALUE rb_mFmodSystem;
@@ -21,7 +20,7 @@ extern VALUE rb_cFmodChannel;
 extern VALUE rb_eFmodError;
 extern VALUE rb_cFmodExInfo;
 
-extern FMOD::System* FmodSystem;
+extern FMOD_SYSTEM* FmodSystem;
 extern ID current_sound;
 
 void Init_System();
@@ -44,26 +43,22 @@ inline double normalize_double(double value, double min, double max) {
     return value;
 }
 
-inline VALUE rb_FmodRaiseError(FMOD_RESULT hr) {
-    VALUE argv = rb_int2inum(hr);
-    rb_raise(rb_class_new_instance(1, &argv, rb_eFmodError), "FmodError %d : %s", hr, FMOD_ErrorString(hr));
-    return Qnil;
-}
+VALUE rb_FmodRaiseError(FMOD_RESULT hr);
 
 #define CHECK_ERROR \
-    if(hr != FMOD_RESULT::FMOD_OK) \
+    if(hr != FMOD_OK) \
         return rb_FmodRaiseError(hr); \
 
 #define GET_SOUND(object, varname) \
-    FMOD::Sound* varname; \
-    Data_Get_Struct(object, FMOD::Sound, varname);
+    FMOD_SOUND* varname; \
+    Data_Get_Struct(object, FMOD_SOUND, varname);
 
 #define SET_DATA(object, varname) \
     rb_check_type(object, T_DATA); \
     RDATA(object)->data = reinterpret_cast<void*>(varname);
 
 #define GET_CHANNEL(object, varname) \
-    FMOD::Channel* varname; \
-    Data_Get_Struct(object, FMOD::Channel, varname);
+    FMOD_CHANNEL* varname; \
+    Data_Get_Struct(object, FMOD_CHANNEL, varname);
 
 #endif

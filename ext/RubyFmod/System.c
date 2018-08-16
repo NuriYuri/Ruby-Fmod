@@ -30,7 +30,7 @@ void Init_System()
     rb_define_module_function(rb_mFmodSystem, "getVersion", _rbf rb_System_getVersion, 0);
     rb_define_module_function(rb_mFmodSystem, "init", _rbf rb_System_init, 2);
     rb_define_module_function(rb_mFmodSystem, "isRecording", _rbf rb_System_isRecording, 1);
-    rb_define_module_function(rb_mFmodSystem, "playSound", _rbf rb_System_playSound, -1); // sound, paused = false => Channel
+    rb_define_module_function(rb_mFmodSystem, "playSound", _rbf rb_System_playSound, -1); // sound, paused = C_FALSE => Channel
     rb_define_module_function(rb_mFmodSystem, "recordStart", _rbf rb_System_recordStart, 3);
     rb_define_module_function(rb_mFmodSystem, "recordStop", _rbf rb_System_recordStop, 1);
     rb_define_module_function(rb_mFmodSystem, "release", _rbf rb_System_release, 0);
@@ -44,7 +44,7 @@ void Init_System()
 
 VALUE rb_System_close(VALUE self)
 {
-    FMOD_RESULT hr = FmodSystem->close();
+    FMOD_RESULT hr = FMOD_System_Close(FmodSystem);
     CHECK_ERROR
     return self;
 }
@@ -60,10 +60,10 @@ VALUE rb_System_create_Sound(VALUE self, VALUE filename, VALUE mode, VALUE extin
 	{
 		FMOD_CREATESOUNDEXINFO* exinfo2;
 		Data_Get_Struct(extinfo, FMOD_CREATESOUNDEXINFO, exinfo2);
-        hr = FmodSystem->createSound(RSTRING_PTR(filename), rb_num2long(mode), exinfo2, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+        hr = FMOD_System_CreateSound(FmodSystem, RSTRING_PTR(filename), NUM2LONG(mode), exinfo2, (FMOD_SOUND**)(&RDATA(sound)->data));
     }
     else
-        hr = FmodSystem->createSound(RSTRING_PTR(filename), rb_num2long(mode), NULL, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+        hr = FMOD_System_CreateSound(FmodSystem, RSTRING_PTR(filename), NUM2LONG(mode), NULL, (FMOD_SOUND**)(&RDATA(sound)->data));
     CHECK_ERROR
     return sound;
 }
@@ -79,10 +79,10 @@ VALUE rb_System_create_Stream(VALUE self, VALUE filename, VALUE mode, VALUE exti
 	{
 		FMOD_CREATESOUNDEXINFO* exinfo2;
 		Data_Get_Struct(extinfo, FMOD_CREATESOUNDEXINFO, exinfo2);
-        hr = FmodSystem->createStream(RSTRING_PTR(filename), rb_num2long(mode), exinfo2, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+        hr = FMOD_System_CreateStream(FmodSystem, RSTRING_PTR(filename), NUM2LONG(mode), exinfo2, (FMOD_SOUND**)(&RDATA(sound)->data));
     }
     else
-        hr = FmodSystem->createStream(RSTRING_PTR(filename), rb_num2long(mode), NULL, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+        hr = FMOD_System_CreateStream(FmodSystem, RSTRING_PTR(filename), NUM2LONG(mode), NULL, (FMOD_SOUND**)(&RDATA(sound)->data));
     CHECK_ERROR
     return sound;
 }
@@ -94,7 +94,7 @@ VALUE rb_System_getCPUUsage(VALUE self)
     float geometry;
     float update;
     float total;
-    FMOD_RESULT hr = FmodSystem->getCPUUsage(&dsp, &stream, &geometry, &update, &total);
+    FMOD_RESULT hr = FMOD_System_GetCPUUsage(FmodSystem, &dsp, &stream, &geometry, &update, &total);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_float_new(dsp));
@@ -109,9 +109,9 @@ VALUE rb_System_getChannel(VALUE self, VALUE id)
 {
     VALUE channel = rb_class_new_instance(0, NULL, rb_cFmodChannel);
     rb_check_type(channel, T_DATA);
-    FMOD_RESULT hr = FmodSystem->getChannel(
-        rb_num2long(id),
-        reinterpret_cast<FMOD::Channel**>(&RDATA(channel)->data)
+    FMOD_RESULT hr = FMOD_System_GetChannel(FmodSystem,
+        NUM2LONG(id),
+        (FMOD_CHANNEL**)(&RDATA(channel)->data)
     );
     CHECK_ERROR
     return channel;
@@ -121,7 +121,7 @@ VALUE rb_System_getChannelsPlaying(VALUE self)
 {
     int channels;
     int realchannels;
-    FMOD_RESULT hr = FmodSystem->getChannelsPlaying(&channels, &realchannels);
+    FMOD_RESULT hr = FMOD_System_GetChannelsPlaying(FmodSystem, &channels, &realchannels);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(channels));
@@ -133,10 +133,10 @@ VALUE rb_System_getBufferSize(VALUE self)
 {
     unsigned int bufferlength;
     int numbuffers;
-    FMOD_RESULT hr = FmodSystem->getDSPBufferSize(&bufferlength, &numbuffers);
+    FMOD_RESULT hr = FMOD_System_GetDSPBufferSize(FmodSystem, &bufferlength, &numbuffers);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
-    rb_ary_push(return_data, RB_UINT2NUM(bufferlength));
+    rb_ary_push(return_data, UINT2NUM(bufferlength));
     rb_ary_push(return_data, rb_int2inum(numbuffers));
     return return_data;
 }
@@ -144,7 +144,7 @@ VALUE rb_System_getBufferSize(VALUE self)
 VALUE rb_System_getDriver(VALUE self)
 {
     int driver;
-    FMOD_RESULT hr = FmodSystem->getDriver(&driver);
+    FMOD_RESULT hr = FMOD_System_GetDriver(FmodSystem, &driver);
     CHECK_ERROR
     return rb_int2inum(driver);
 }
@@ -156,8 +156,8 @@ VALUE rb_System_getDriverInfo(VALUE self, VALUE id)
     int systemrate;
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
-    FMOD_RESULT hr = FmodSystem->getDriverInfo(
-        rb_num2long(id),
+    FMOD_RESULT hr = FMOD_System_GetDriverInfo(FmodSystem,
+        NUM2LONG(id),
         name,
         1024,
         &guid,
@@ -169,10 +169,10 @@ VALUE rb_System_getDriverInfo(VALUE self, VALUE id)
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_str_new_cstr(name));
     VALUE guid_arr = rb_ary_new();
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data1));
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data2));
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data3));
-    rb_ary_push(guid_arr, rb_str_new(reinterpret_cast<const char*>(guid.Data4), 8));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data1));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data2));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data3));
+    rb_ary_push(guid_arr, rb_str_new((const char*)(guid.Data4), 8));
     rb_ary_push(return_data, guid_arr);
     rb_ary_push(return_data, rb_int2inum(systemrate));
     rb_ary_push(return_data, rb_int2inum(speakermode));
@@ -185,7 +185,7 @@ VALUE rb_System_getFileUsage(VALUE self)
     long long sampleBytesRead;
     long long streamBytesRead;
     long long otherBytesRead;
-    FMOD_RESULT hr = FmodSystem->getFileUsage(&sampleBytesRead, &streamBytesRead, &otherBytesRead);
+    FMOD_RESULT hr = FMOD_System_GetFileUsage(FmodSystem, &sampleBytesRead, &streamBytesRead, &otherBytesRead);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_ll2inum(sampleBytesRead));
@@ -197,7 +197,7 @@ VALUE rb_System_getFileUsage(VALUE self)
 VALUE rb_System_getNumDrivers(VALUE self)
 {
     int numdrivers;
-    FMOD_RESULT hr = FmodSystem->getNumDrivers(&numdrivers);
+    FMOD_RESULT hr = FMOD_System_GetNumDrivers(FmodSystem, &numdrivers);
     CHECK_ERROR
     return rb_int2inum(numdrivers);
 }
@@ -205,7 +205,7 @@ VALUE rb_System_getNumDrivers(VALUE self)
 VALUE rb_System_getOutput(VALUE self)
 {
     FMOD_OUTPUTTYPE output;
-    FMOD_RESULT hr = FmodSystem->getOutput(&output);
+    FMOD_RESULT hr = FMOD_System_GetOutput(FmodSystem, &output);
     CHECK_ERROR
     return rb_int2inum(output);
 }
@@ -218,8 +218,8 @@ VALUE rb_System_getRecordDriverInfo(VALUE self, VALUE id)
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
     FMOD_DRIVER_STATE driverstate;
-    FMOD_RESULT hr = FmodSystem->getRecordDriverInfo(
-        rb_num2long(id),
+    FMOD_RESULT hr = FMOD_System_GetRecordDriverInfo(FmodSystem,
+        NUM2LONG(id),
         name,
         1024,
         &guid,
@@ -232,15 +232,15 @@ VALUE rb_System_getRecordDriverInfo(VALUE self, VALUE id)
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_str_new_cstr(name));
     VALUE guid_arr = rb_ary_new();
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data1));
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data2));
-    rb_ary_push(guid_arr, RB_UINT2NUM(guid.Data3));
-    rb_ary_push(guid_arr, rb_str_new(reinterpret_cast<const char*>(guid.Data4), 8));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data1));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data2));
+    rb_ary_push(guid_arr, UINT2NUM(guid.Data3));
+    rb_ary_push(guid_arr, rb_str_new((const char*)(guid.Data4), 8));
     rb_ary_push(return_data, guid_arr);
     rb_ary_push(return_data, rb_int2inum(systemrate));
     rb_ary_push(return_data, rb_int2inum(speakermode));
     rb_ary_push(return_data, rb_int2inum(speakermodechannels));
-    rb_ary_push(return_data, RB_UINT2NUM(driverstate));
+    rb_ary_push(return_data, UINT2NUM(driverstate));
     return return_data;
 }
 
@@ -248,7 +248,7 @@ VALUE rb_System_getRecordNumDriver(VALUE self)
 {
     int numdrivers;
     int numconnected;
-    FMOD_RESULT hr = FmodSystem->getRecordNumDrivers(&numdrivers, &numconnected);
+    FMOD_RESULT hr = FMOD_System_GetRecordNumDrivers(FmodSystem, &numdrivers, &numconnected);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(numdrivers));
@@ -259,15 +259,15 @@ VALUE rb_System_getRecordNumDriver(VALUE self)
 VALUE rb_System_getRecordPosition(VALUE self, VALUE id)
 {
     unsigned int position;
-    FMOD_RESULT hr = FmodSystem->getRecordPosition(rb_num2long(id), &position);
+    FMOD_RESULT hr = FMOD_System_GetRecordPosition(FmodSystem, NUM2LONG(id), &position);
     CHECK_ERROR
-    return RB_UINT2NUM(position);
+    return UINT2NUM(position);
 }
 
 VALUE rb_System_getSoftwareChannels(VALUE self)
 {
     int numsoftwarechannels;
-    FMOD_RESULT hr = FmodSystem->getSoftwareChannels(&numsoftwarechannels);
+    FMOD_RESULT hr = FMOD_System_GetSoftwareChannels(FmodSystem, &numsoftwarechannels);
     CHECK_ERROR
     return rb_int2inum(numsoftwarechannels);
 }
@@ -277,7 +277,7 @@ VALUE rb_System_getSoftwareFormat(VALUE self)
     int samplerate;
     FMOD_SPEAKERMODE speakermode;
     int numrawspeakers;
-    FMOD_RESULT hr = FmodSystem->getSoftwareFormat(&samplerate, &speakermode, &numrawspeakers);
+    FMOD_RESULT hr = FMOD_System_GetSoftwareFormat(FmodSystem, &samplerate, &speakermode, &numrawspeakers);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(samplerate));
@@ -291,7 +291,7 @@ VALUE rb_System_getSoundRAM(VALUE self)
     int currentalloced;
     int maxalloced;
     int total;
-    FMOD_RESULT hr = FmodSystem->getSoundRAM(&currentalloced, &maxalloced, &total);
+    FMOD_RESULT hr = FMOD_System_GetSoundRAM(FmodSystem, &currentalloced, &maxalloced, &total);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(currentalloced));
@@ -303,8 +303,8 @@ VALUE rb_System_getSoundRAM(VALUE self)
 VALUE rb_System_getSpeakerModeChannels(VALUE self, VALUE mode)
 {
     int channels;
-    FMOD_RESULT hr = FmodSystem->getSpeakerModeChannels(
-        static_cast<FMOD_SPEAKERMODE>(rb_num2long(mode)),
+    FMOD_RESULT hr = FMOD_System_GetSpeakerModeChannels(FmodSystem,
+        (FMOD_SPEAKERMODE)(NUM2LONG(mode)),
         &channels
     );
     CHECK_ERROR
@@ -315,9 +315,9 @@ VALUE rb_System_getSpeakerPosition(VALUE self, VALUE speaker)
 {
     float x;
     float y;
-    bool active;
-    FMOD_RESULT hr = FmodSystem->getSpeakerPosition(
-        static_cast<FMOD_SPEAKER>(rb_num2long(speaker)),
+    int active;
+    FMOD_RESULT hr = FMOD_System_GetSpeakerPosition(FmodSystem,
+        (FMOD_SPEAKER)(NUM2LONG(speaker)),
         &x,
         &y,
         &active
@@ -334,38 +334,38 @@ VALUE rb_System_getStreamBufferSize(VALUE self)
 {
     unsigned int filebuffersize;
     FMOD_TIMEUNIT filebuffersizetype;
-    FMOD_RESULT hr = FmodSystem->getStreamBufferSize(&filebuffersize, &filebuffersizetype);
+    FMOD_RESULT hr = FMOD_System_GetStreamBufferSize(FmodSystem, &filebuffersize, &filebuffersizetype);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
-    rb_ary_push(return_data, RB_UINT2NUM(filebuffersize));
-    rb_ary_push(return_data, RB_UINT2NUM(filebuffersizetype));
+    rb_ary_push(return_data, UINT2NUM(filebuffersize));
+    rb_ary_push(return_data, UINT2NUM(filebuffersizetype));
     return return_data;
 }
 
 VALUE rb_System_getVersion(VALUE self)
 {
     unsigned int version;
-    FMOD_RESULT hr = FmodSystem->getVersion(&version);
+    FMOD_RESULT hr = FMOD_System_GetVersion(FmodSystem, &version);
     CHECK_ERROR
-    return RB_UINT2NUM(version);
+    return UINT2NUM(version);
 }
 
 VALUE rb_System_init(VALUE self, VALUE num_channel, VALUE flags)
 {
-    FMOD_RESULT hr = FmodSystem->init(rb_num2long(num_channel), rb_num2long(flags), NULL);
+    FMOD_RESULT hr = FMOD_System_Init(FmodSystem, NUM2LONG(num_channel), NUM2LONG(flags), NULL);
     CHECK_ERROR
     return self;
 }
 
 VALUE rb_System_isRecording(VALUE self, VALUE id)
 {
-    bool state;
-    FMOD_RESULT hr = FmodSystem->isRecording(rb_num2long(id), &state);
+    int state;
+    FMOD_RESULT hr = FMOD_System_IsRecording(FmodSystem, NUM2LONG(id), &state);
     CHECK_ERROR
     return (state ? Qtrue : Qfalse);
 }
 
-VALUE rb_System_playSound(int argc, VALUE* argv, VALUE self) // sound, paused = false => Channel
+VALUE rb_System_playSound(int argc, VALUE* argv, VALUE self) // sound, paused = C_FALSE => Channel
 {
     VALUE sound, paused;
     rb_scan_args(argc, argv, "11", &sound, &paused);
@@ -377,11 +377,11 @@ VALUE rb_System_playSound(int argc, VALUE* argv, VALUE self) // sound, paused = 
     GET_SOUND(sound, fsound)
     VALUE channel = rb_class_new_instance(0, NULL, rb_cFmodChannel);
     rb_check_type(channel, T_DATA);
-    FMOD_RESULT hr = FmodSystem->playSound(
-        fsound, 
-        NULL, 
-        RTEST(paused), 
-        reinterpret_cast<FMOD::Channel**>(&RDATA(channel)->data)
+    FMOD_RESULT hr = FMOD_System_PlaySound(FmodSystem,
+        fsound,
+        NULL,
+        RTEST(paused),
+        (FMOD_CHANNEL**)(&RDATA(channel)->data)
     );
     CHECK_ERROR
     rb_ivar_set(channel, current_sound, sound);
@@ -396,9 +396,9 @@ VALUE rb_System_recordStart(VALUE self, VALUE id, VALUE sound, VALUE loop)
         return Qnil;
     }
     rb_check_type(sound, T_DATA);
-    FMOD_RESULT hr = FmodSystem->recordStart(
-        rb_num2long(id), 
-        reinterpret_cast<FMOD::Sound*>(RDATA(sound)->data),
+    FMOD_RESULT hr = FMOD_System_RecordStart(FmodSystem,
+        NUM2LONG(id),
+        (FMOD_SOUND*)(RDATA(sound)->data),
         RTEST(loop)
     );
     CHECK_ERROR
@@ -407,29 +407,29 @@ VALUE rb_System_recordStart(VALUE self, VALUE id, VALUE sound, VALUE loop)
 
 VALUE rb_System_recordStop(VALUE self, VALUE id)
 {
-    FMOD_RESULT hr = FmodSystem->recordStop(rb_num2long(id));
+    FMOD_RESULT hr = FMOD_System_RecordStop(FmodSystem, NUM2LONG(id));
     CHECK_ERROR
     return self;
 }
 
 VALUE rb_System_release(VALUE self)
 {
-    FMOD_RESULT hr = FmodSystem->release();
+    FMOD_RESULT hr = FMOD_System_Release(FmodSystem);
     CHECK_ERROR
     return self;
 }
 
 VALUE rb_System_setDriver(VALUE self, VALUE driver)
 {
-    FMOD_RESULT hr = FmodSystem->setDriver(rb_num2long(driver));
+    FMOD_RESULT hr = FMOD_System_SetDriver(FmodSystem, NUM2LONG(driver));
     CHECK_ERROR
     return self;
 }
 
 VALUE rb_System_setOutput(VALUE self, VALUE output)
 {
-    FMOD_RESULT hr = FmodSystem->setOutput(
-        static_cast<FMOD_OUTPUTTYPE>(rb_num2long(output))
+    FMOD_RESULT hr = FMOD_System_SetOutput(FmodSystem,
+        (FMOD_OUTPUTTYPE)(NUM2LONG(output))
     );
     CHECK_ERROR
     return self;
@@ -437,17 +437,17 @@ VALUE rb_System_setOutput(VALUE self, VALUE output)
 
 VALUE rb_System_setSoftwareChannels(VALUE self, VALUE max_channels)
 {
-    FMOD_RESULT hr = FmodSystem->setSoftwareChannels(rb_num2long(max_channels));
+    FMOD_RESULT hr = FMOD_System_SetSoftwareChannels(FmodSystem, NUM2LONG(max_channels));
     CHECK_ERROR
     return self;
 }
 
 VALUE rb_System_setSoftwareFormat(VALUE self, VALUE samplerate, VALUE speakermode, VALUE numrawspeakers)
 {
-    FMOD_RESULT hr = FmodSystem->setSoftwareFormat(
-        rb_num2long(samplerate),
-        static_cast<FMOD_SPEAKERMODE>(rb_num2long(speakermode)),
-        rb_num2long(numrawspeakers)
+    FMOD_RESULT hr = FMOD_System_SetSoftwareFormat(FmodSystem,
+        NUM2LONG(samplerate),
+        (FMOD_SPEAKERMODE)(NUM2LONG(speakermode)),
+        NUM2LONG(numrawspeakers)
     );
     CHECK_ERROR
     return self;
@@ -455,9 +455,9 @@ VALUE rb_System_setSoftwareFormat(VALUE self, VALUE samplerate, VALUE speakermod
 
 VALUE rb_System_setStreamBufferSize(VALUE self, VALUE filebuffersize, VALUE filebuffersizetype)
 {
-    FMOD_RESULT hr = FmodSystem->setStreamBufferSize(
-        RB_NUM2UINT(filebuffersize),
-        RB_NUM2UINT(filebuffersizetype)
+    FMOD_RESULT hr = FMOD_System_SetStreamBufferSize(FmodSystem,
+        NUM2UINT(filebuffersize),
+        NUM2UINT(filebuffersizetype)
     );
     CHECK_ERROR
     return self;
@@ -465,7 +465,7 @@ VALUE rb_System_setStreamBufferSize(VALUE self, VALUE filebuffersize, VALUE file
 
 VALUE rb_System_update(VALUE self)
 {
-    FMOD_RESULT hr = FmodSystem->update();
+    FMOD_RESULT hr = FMOD_System_Update(FmodSystem);
     CHECK_ERROR
     return self;
 }

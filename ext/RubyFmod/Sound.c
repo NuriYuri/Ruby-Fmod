@@ -2,7 +2,7 @@
 
 #define GET_SOUND_SAFE \
     GET_SOUND(self, fsound) \
-    if(fsound == nullptr) \
+    if(fsound == NULL) \
         rb_raise(rb_eFmodError, "Sound not created by Fmod");
 
 ID subsound_table = Qnil;
@@ -10,15 +10,15 @@ ID subsound_parent = Qnil;
 
 void rb_Sound_Free(void* data)
 {
-    if(data != nullptr)
+    if(data != NULL)
     {
-        reinterpret_cast<FMOD::Sound*>(data)->release();
+        FMOD_Sound_Release((FMOD_SOUND*)data);
     }
 }
 
 VALUE rb_Sound_Alloc(VALUE klass)
 {
-    return Data_Wrap_Struct(klass, NULL, rb_Sound_Free, nullptr);
+    return Data_Wrap_Struct(klass, NULL, rb_Sound_Free, NULL);
 }
 
 void Init_Sound()
@@ -66,14 +66,14 @@ void rb_Sound_store_sound_to_subsound_table(VALUE self, VALUE sound, long id)
     rb_ary_store(table, id, sound);
 }
 
-bool rb_Sound_is_subsound_present(VALUE self, long id)
+int rb_Sound_is_subsound_present(VALUE self, long id)
 {
     VALUE table = rb_ivar_get(self, subsound_table);
     if(table == Qnil)
-        return false;
+        return C_FALSE;
     if(rb_ary_entry(table, id) == Qnil)
-        return false;
-    return true;
+        return C_FALSE;
+    return C_TRUE;
 }
 
 VALUE rb_Sound_get_sub_sound(VALUE self, long id)
@@ -93,7 +93,7 @@ VALUE rb_Sound_getDefaults(VALUE self)
     GET_SOUND_SAFE
     float frequency;
     int priority;
-    FMOD_RESULT hr = fsound->getDefaults(&frequency, &priority);
+    FMOD_RESULT hr = FMOD_Sound_GetDefaults(fsound, &frequency, &priority);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_float_new(frequency));
@@ -108,7 +108,7 @@ VALUE rb_Sound_getFormat(VALUE self)
     FMOD_SOUND_FORMAT format;
     int channels;
     int bits;
-    FMOD_RESULT hr = fsound->getFormat(&type, &format, &channels, &bits);
+    FMOD_RESULT hr = FMOD_Sound_GetFormat(fsound, &type, &format, &channels, &bits);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(type));
@@ -122,16 +122,16 @@ VALUE rb_Sound_getLength(VALUE self, VALUE timeunit)
 {
     GET_SOUND_SAFE
     unsigned int length;
-    FMOD_RESULT hr = fsound->getLength(&length, rb_num2long(timeunit));
+    FMOD_RESULT hr = FMOD_Sound_GetLength(fsound, &length, NUM2LONG(timeunit));
     CHECK_ERROR
-    return RB_UINT2NUM(length);
+    return UINT2NUM(length);
 }
 
 VALUE rb_Sound_getLoopCount(VALUE self)
 {
     GET_SOUND_SAFE
     int loopcount;
-    FMOD_RESULT hr = fsound->getLoopCount(&loopcount);
+    FMOD_RESULT hr = FMOD_Sound_GetLoopCount(fsound, &loopcount);
     CHECK_ERROR
     return rb_int2inum(loopcount);
 }
@@ -140,16 +140,16 @@ VALUE rb_Sound_getLoopPoints(VALUE self, VALUE startunit, VALUE stopunit)
 {
     GET_SOUND_SAFE
     unsigned int start, end;
-    FMOD_RESULT hr = fsound->getLoopPoints(
+    FMOD_RESULT hr = FMOD_Sound_GetLoopPoints(fsound,
         &start,
-        rb_num2long(startunit),
+        NUM2LONG(startunit),
         &end,
-        rb_num2long(stopunit)
+        NUM2LONG(stopunit)
     );
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
-    rb_ary_push(return_data, RB_UINT2NUM(start));
-    rb_ary_push(return_data, RB_UINT2NUM(end));
+    rb_ary_push(return_data, UINT2NUM(start));
+    rb_ary_push(return_data, UINT2NUM(end));
     return return_data;
 }
 
@@ -157,16 +157,16 @@ VALUE rb_Sound_getMode(VALUE self)
 {
     GET_SOUND_SAFE
     FMOD_MODE mode;
-    FMOD_RESULT hr = fsound->getMode(&mode);
+    FMOD_RESULT hr = FMOD_Sound_GetMode(fsound, &mode);
     CHECK_ERROR
-    return RB_UINT2NUM(mode);
+    return UINT2NUM(mode);
 }
 
 VALUE rb_Sound_getMusicChannelVolume(VALUE self, VALUE channelid)
 {
     GET_SOUND_SAFE
     float volume;
-    FMOD_RESULT hr = fsound->getMusicChannelVolume(rb_num2long(channelid), &volume);
+    FMOD_RESULT hr = FMOD_Sound_GetMusicChannelVolume(fsound, NUM2LONG(channelid), &volume);
     CHECK_ERROR
     return rb_float_new(volume);
 }
@@ -175,7 +175,7 @@ VALUE rb_Sound_getMusicNumChannels(VALUE self)
 {
     GET_SOUND_SAFE
     int numchannels;
-    FMOD_RESULT hr = fsound->getMusicNumChannels(&numchannels);
+    FMOD_RESULT hr = FMOD_Sound_GetMusicNumChannels(fsound, &numchannels);
     CHECK_ERROR
     return rb_int2inum(numchannels);
 }
@@ -184,7 +184,7 @@ VALUE rb_Sound_getMusicSpeed(VALUE self)
 {
     GET_SOUND_SAFE
     float speed;
-    FMOD_RESULT hr = fsound->getMusicSpeed(&speed);
+    FMOD_RESULT hr = FMOD_Sound_GetMusicSpeed(fsound, &speed);
     CHECK_ERROR
     return rb_float_new(speed);
 }
@@ -193,7 +193,7 @@ VALUE rb_Sound_getName(VALUE self)
 {
     GET_SOUND_SAFE
     char name[1024];
-    FMOD_RESULT hr = fsound->getName(name, 1024);
+    FMOD_RESULT hr = FMOD_Sound_GetName(fsound, name, 1024);
     CHECK_ERROR
     return rb_str_new_cstr(name);
 }
@@ -202,7 +202,7 @@ VALUE rb_Sound_getNumSubSounds(VALUE self)
 {
     GET_SOUND_SAFE
     int numsubsound;
-    FMOD_RESULT hr = fsound->getNumSubSounds(&numsubsound);
+    FMOD_RESULT hr = FMOD_Sound_GetNumSubSounds(fsound, &numsubsound);
     CHECK_ERROR
     return rb_int2inum(numsubsound);
 }
@@ -211,7 +211,7 @@ VALUE rb_Sound_getNumTags(VALUE self)
 {
     GET_SOUND_SAFE
     int numtag, numtagupdated;
-    FMOD_RESULT hr = fsound->getNumTags(&numtag, &numtagupdated);
+    FMOD_RESULT hr = FMOD_Sound_GetNumTags(fsound, &numtag, &numtagupdated);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(numtag));
@@ -224,13 +224,13 @@ VALUE rb_Sound_getOpenState(VALUE self)
     GET_SOUND_SAFE
     FMOD_OPENSTATE openstate;
     unsigned int percentbuffered;
-    bool starving;
-    bool diskbusy;
-    FMOD_RESULT hr = fsound->getOpenState(&openstate, &percentbuffered, &starving, &diskbusy);
+    int starving;
+    int diskbusy;
+    FMOD_RESULT hr = FMOD_Sound_GetOpenState(fsound, &openstate, &percentbuffered, &starving, &diskbusy);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(openstate));
-    rb_ary_push(return_data, RB_UINT2NUM(percentbuffered));
+    rb_ary_push(return_data, UINT2NUM(percentbuffered));
     rb_ary_push(return_data, starving ? Qtrue : Qfalse);
     rb_ary_push(return_data, diskbusy ? Qtrue : Qfalse);
     return return_data;
@@ -239,26 +239,26 @@ VALUE rb_Sound_getOpenState(VALUE self)
 VALUE rb_Sound_getSubSound(VALUE self, VALUE index)
 {
     GET_SOUND_SAFE
-    long id = rb_num2long(index);
+    long id = NUM2LONG(index);
     VALUE sound = rb_Sound_get_sub_sound(self, id);
     rb_check_type(sound, T_DATA);
-    FMOD_RESULT hr = fsound->getSubSound(id, reinterpret_cast<FMOD::Sound**>(&RDATA(sound)->data));
+    FMOD_RESULT hr = FMOD_Sound_GetSubSound(fsound, id, (FMOD_SOUND**)(&RDATA(sound)->data));
     CHECK_ERROR
     rb_ivar_set(sound, subsound_parent, self);
     return sound;
 }
 
-VALUE rb_Sound_store_child_in_parent_table(VALUE child, VALUE parent, FMOD::Sound* fsound)
+VALUE rb_Sound_store_child_in_parent_table(VALUE child, VALUE parent, FMOD_SOUND* fsound)
 {
-    FMOD::Sound* psound = reinterpret_cast<FMOD::Sound*>(RDATA(parent)->data);
-    FMOD::Sound* csound;
+    FMOD_SOUND* psound = (FMOD_SOUND*)(RDATA(parent)->data);
+    FMOD_SOUND* csound;
     // Getting the subSound index
     int numsubsound;
-    FMOD_RESULT hr = psound->getNumSubSounds(&numsubsound);
+    FMOD_RESULT hr = FMOD_Sound_GetNumSubSounds(psound, &numsubsound);
     CHECK_ERROR
     for(int i = 0; i < numsubsound;i++)
     {
-        hr = psound->getSubSound(i, &csound);
+        hr = FMOD_Sound_GetSubSound(psound, i, &csound);
         CHECK_ERROR
         if(csound == fsound)
         {
@@ -288,7 +288,7 @@ VALUE rb_Sound_getSubSoundParent(VALUE self)
         return parent;
     parent = rb_class_new_instance(0, NULL, rb_cFmodSound);
     rb_check_type(parent, T_DATA);
-    FMOD_RESULT hr = fsound->getSubSoundParent(reinterpret_cast<FMOD::Sound**>(&RDATA(parent)->data));
+    FMOD_RESULT hr = FMOD_Sound_GetSubSoundParent(fsound, (FMOD_SOUND**)(&RDATA(parent)->data));
     CHECK_ERROR
     rb_ivar_set(self, subsound_parent, parent);
     return rb_Sound_store_child_in_parent_table(self, parent, fsound);
@@ -299,7 +299,7 @@ VALUE rb_Sound_getTag(VALUE self, VALUE name, VALUE index)
     GET_SOUND_SAFE
     rb_check_type(name, T_STRING);
     FMOD_TAG tag;
-    FMOD_RESULT hr = fsound->getTag(RSTRING_PTR(name), rb_num2long(index), &tag);
+    FMOD_RESULT hr = FMOD_Sound_GetTag(fsound, RSTRING_PTR(name), NUM2LONG(index), &tag);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
     rb_ary_push(return_data, rb_int2inum(tag.type));
@@ -309,21 +309,21 @@ VALUE rb_Sound_getTag(VALUE self, VALUE name, VALUE index)
     {
         case FMOD_TAGDATATYPE_INT:
             if(tag.datalen == SIZEOF_LONG_LONG)
-                rb_ary_push(return_data, rb_ll2inum(*reinterpret_cast<long long*>(tag.data)));
+                rb_ary_push(return_data, rb_ll2inum(*(long long*)(tag.data)));
             else if(tag.datalen == SIZEOF_INT)
-                rb_ary_push(return_data, rb_int2inum(*reinterpret_cast<int*>(tag.data)));
+                rb_ary_push(return_data, rb_int2inum(*(int*)(tag.data)));
             else if(tag.datalen == SIZEOF_SHORT)
-                rb_ary_push(return_data, rb_int2inum(*reinterpret_cast<short*>(tag.data)));
+                rb_ary_push(return_data, rb_int2inum(*(short*)(tag.data)));
             else
-                rb_ary_push(return_data, rb_int2inum(*reinterpret_cast<char*>(tag.data)));
+                rb_ary_push(return_data, rb_int2inum(*(char*)(tag.data)));
             break;
         case FMOD_TAGDATATYPE_FLOAT:
             if(tag.datalen == SIZEOF_FLOAT)
-                rb_ary_push(return_data, rb_float_new(static_cast<double>(*reinterpret_cast<float*>(tag.data))));
+                rb_ary_push(return_data, rb_float_new((double)(*(float*)(tag.data))));
             else if(tag.datalen == SIZEOF_DOUBLE)
-                rb_ary_push(return_data, rb_float_new(*reinterpret_cast<double*>(tag.data)));
+                rb_ary_push(return_data, rb_float_new(*(double*)(tag.data)));
             else if(tag.datalen == sizeof(long double))
-                rb_ary_push(return_data, rb_float_new(static_cast<double>(*reinterpret_cast<long double*>(tag.data))));
+                rb_ary_push(return_data, rb_float_new((double)(*(long double*)(tag.data))));
             else
                 rb_ary_push(return_data, rb_str_new((char*)tag.data, tag.datalen));
             break;
@@ -347,24 +347,24 @@ VALUE rb_Sound_readData(VALUE self, VALUE buffer) // Returns the number of byte 
     GET_SOUND_SAFE
     unsigned int read;
     rb_check_type(buffer, T_STRING);
-    FMOD_RESULT hr = fsound->readData(RSTRING_PTR(buffer), RSTRING_LEN(buffer), &read);
+    FMOD_RESULT hr = FMOD_Sound_ReadData(fsound, RSTRING_PTR(buffer), RSTRING_LEN(buffer), &read);
     CHECK_ERROR
-    return RB_UINT2NUM(read);
+    return UINT2NUM(read);
 }
 
 VALUE rb_Sound_release(VALUE self) // Is the subsound released ?
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->release();
+    FMOD_RESULT hr = FMOD_Sound_Release(fsound);
     CHECK_ERROR
-    RDATA(self)->data = nullptr;
+    RDATA(self)->data = NULL;
     return Qnil;
 }
 
 VALUE rb_Sound_seekData(VALUE self, VALUE pcmoffset)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->seekData(RB_NUM2UINT(pcmoffset));
+    FMOD_RESULT hr = FMOD_Sound_SeekData(fsound, NUM2UINT(pcmoffset));
     CHECK_ERROR
     return self;
 }
@@ -372,7 +372,7 @@ VALUE rb_Sound_seekData(VALUE self, VALUE pcmoffset)
 VALUE rb_Sound_setDefaults(VALUE self, VALUE frequency, VALUE priority)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setDefaults(rb_num2dbl(frequency), rb_num2long(priority));
+    FMOD_RESULT hr = FMOD_Sound_SetDefaults(fsound, NUM2DBL(frequency), NUM2LONG(priority));
     CHECK_ERROR
     return self;
 }
@@ -380,7 +380,7 @@ VALUE rb_Sound_setDefaults(VALUE self, VALUE frequency, VALUE priority)
 VALUE rb_Sound_setLoopCount(VALUE self, VALUE count)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setLoopCount(rb_num2long(count));
+    FMOD_RESULT hr = FMOD_Sound_SetLoopCount(fsound, NUM2LONG(count));
     CHECK_ERROR
     return self;
 }
@@ -388,11 +388,11 @@ VALUE rb_Sound_setLoopCount(VALUE self, VALUE count)
 VALUE rb_Sound_setLoopPoints(VALUE self, VALUE start, VALUE startunit, VALUE stop, VALUE stopunit)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setLoopPoints(
-        RB_NUM2UINT(start),
-        rb_num2long(startunit),
-        RB_NUM2UINT(stop),
-        rb_num2long(stopunit)
+    FMOD_RESULT hr = FMOD_Sound_SetLoopPoints(fsound,
+        NUM2UINT(start),
+        NUM2LONG(startunit),
+        NUM2UINT(stop),
+        NUM2LONG(stopunit)
     );
     CHECK_ERROR
     return self;
@@ -401,7 +401,7 @@ VALUE rb_Sound_setLoopPoints(VALUE self, VALUE start, VALUE startunit, VALUE sto
 VALUE rb_Sound_setMode(VALUE self, VALUE mode)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setMode(rb_num2long(mode));
+    FMOD_RESULT hr = FMOD_Sound_SetMode(fsound, NUM2LONG(mode));
     CHECK_ERROR
     return self;
 }
@@ -409,9 +409,9 @@ VALUE rb_Sound_setMode(VALUE self, VALUE mode)
 VALUE rb_Sound_setMusicChannelVolume(VALUE self, VALUE channelindex, VALUE volume)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setMusicChannelVolume(
-        rb_num2long(channelindex),
-        rb_num2dbl(volume)
+    FMOD_RESULT hr = FMOD_Sound_SetMusicChannelVolume(fsound,
+        NUM2LONG(channelindex),
+        NUM2DBL(volume)
     );
     CHECK_ERROR
     return self;
@@ -420,7 +420,7 @@ VALUE rb_Sound_setMusicChannelVolume(VALUE self, VALUE channelindex, VALUE volum
 VALUE rb_Sound_setMusicSpeed(VALUE self, VALUE speed)
 {
     GET_SOUND_SAFE
-    FMOD_RESULT hr = fsound->setMusicSpeed(rb_num2dbl(speed));
+    FMOD_RESULT hr = FMOD_Sound_SetMusicSpeed(fsound, NUM2DBL(speed));
     CHECK_ERROR
     return self;
 }
