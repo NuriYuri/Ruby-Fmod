@@ -23,6 +23,7 @@ void rb_ExInfo_Free(void* data)
 VALUE rb_ExInfo_Alloc(VALUE klass)
 {
 	FMOD_CREATESOUNDEXINFO* exinfo = (FMOD_CREATESOUNDEXINFO*)malloc(sizeof(FMOD_CREATESOUNDEXINFO));
+  memset(exinfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
 	exinfo->cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
 	return Data_Wrap_Struct(klass, NULL, rb_ExInfo_Free, exinfo);
 }
