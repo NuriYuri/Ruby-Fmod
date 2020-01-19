@@ -10,7 +10,7 @@ spec = Gem::Specification.new do |s|
   s.authors = ["Nuri Yuri"]
   #s.homepage = "https://psdk.pokemonworkshop.com/litergss"
   s.extensions = FileList["ext/RubyFmod/extconf.rb"]
-  s.files = FileList["ext/RubyFmod/*.h", "ext/RubyFmod/*.cpp"]
+  s.files = FileList["ext/RubyFmod/*.h", "ext/RubyFmod/*.c"]
   s.metadata    = { "source_code_uri" => "https://github.com/NuriYuri/Ruby-Fmod" }
 end
 
