@@ -28,12 +28,7 @@ void Init_RubyFmod()
     rb_cFmodSound = rb_define_class_under(rb_mFmod, "Sound", rb_cObject);
     rb_cFmodChannel = rb_define_class_under(rb_mFmod, "Channel", rb_cObject);
     rb_eFmodError = rb_define_class_under(rb_mFmod, "Error", rb_eStandardError);
-
-    rb_define_method(rb_eFmodError, "initialize", _rbf rb_FmodError_Init, 1);
-    rb_define_method(rb_eFmodError, "hr", _rbf rb_FmodError_hr, 0);
-    rb_define_method(rb_eFmodError, "new", _rbf rb_FmodError_new, 1);
-
-    FmodErrorHr = rb_intern("@hr");
+ 
     current_sound = rb_intern("@current_sound");
 
     Init_System();
@@ -42,27 +37,8 @@ void Init_RubyFmod()
     InitConstants();
 }
 
-
-VALUE rb_FmodError_Init(VALUE self, VALUE hr)
-{
-    rb_ivar_set(self, FmodErrorHr, hr);
-    return self;
-}
-
-VALUE rb_FmodError_hr(VALUE self)
-{
-    return rb_ivar_get(self, FmodErrorHr);
-}
-
-VALUE rb_FmodError_new(VALUE self, VALUE message)
-{
-    rb_iv_set(self, "mesg", message);
-    return self;
-}
-
 VALUE rb_FmodRaiseError(FMOD_RESULT hr) {
-    VALUE argv = rb_int2inum(hr);
-    rb_raise(rb_class_new_instance(1, &argv, rb_eFmodError), "FmodError %d : %s", hr, FMOD_ErrorString(hr));
+    rb_raise(rb_eFmodError, "FmodError %d : %s", hr, FMOD_ErrorString(hr));
     return Qnil;
 }
 
