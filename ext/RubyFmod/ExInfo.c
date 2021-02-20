@@ -85,8 +85,8 @@ VALUE rb_ExInfo_Initialize(int argc, VALUE *argv, VALUE self)
 												exinfo->channelorder = (FMOD_CHANNELORDER)(NUM2INT(argv[9]));
 											if (argc > 10)
 											{
-												if (RTEST(argv[10]))
-													exinfo->channelmask = NUM2INT(argv[10]);
+												//if (RTEST(argv[10]))
+												//	exinfo->channelmask = NUM2INT(argv[10]);
 												if (argc > 11)
 												{
 													if (RTEST(argv[11]))

@@ -332,7 +332,6 @@ VALUE rb_Sound_getTag(VALUE self, VALUE name, VALUE index)
         case FMOD_TAGDATATYPE_STRING_UTF16:
         case FMOD_TAGDATATYPE_STRING_UTF16BE:
         case FMOD_TAGDATATYPE_STRING_UTF8:
-        case FMOD_TAGDATATYPE_CDTOC: // Don't have the struct :/
         default:
             rb_ary_push(return_data, rb_str_new((char*)tag.data, tag.datalen));
             break;

@@ -71,9 +71,7 @@ void InitConstants()
     rb_define_const(mod, "SAMPLEDATA", rb_int2inum(FMOD_MEMORY_SAMPLEDATA));
     rb_define_const(mod, "DSP_BUFFER", rb_int2inum(FMOD_MEMORY_DSP_BUFFER));
     rb_define_const(mod, "PLUGIN", rb_int2inum(FMOD_MEMORY_PLUGIN));
-    rb_define_const(mod, "XBOX360_PHYSICAL", rb_int2inum(FMOD_MEMORY_XBOX360_PHYSICAL));
     rb_define_const(mod, "PERSISTENT", rb_int2inum(FMOD_MEMORY_PERSISTENT));
-    rb_define_const(mod, "SECONDARY", rb_int2inum(FMOD_MEMORY_SECONDARY));
     rb_define_const(mod, "ALL", rb_int2inum(FMOD_MEMORY_ALL));
     // CHANNELMASK
     mod = rb_define_module_under(rb_mFmod, "CHANNELMASK");
@@ -109,7 +107,7 @@ void InitConstants()
     rb_define_const(mod, "PREFER_DOLBY_DOWNMIX", rb_int2inum(FMOD_INIT_PREFER_DOLBY_DOWNMIX));
     rb_define_const(mod, "THREAD_UNSAFE", rb_int2inum(FMOD_INIT_THREAD_UNSAFE));
     rb_define_const(mod, "PROFILE_METER_ALL", rb_int2inum(FMOD_INIT_PROFILE_METER_ALL));
-    rb_define_const(mod, "DISABLE_SRS_HIGHPASSFILTER", rb_int2inum(FMOD_INIT_DISABLE_SRS_HIGHPASSFILTER));
+    rb_define_const(mod, "MEMORY_TRACKING", rb_int2inum(FMOD_INIT_MEMORY_TRACKING));
     // FMOD_MODE
     mod = rb_define_module_under(rb_mFmod, "MODE");
     rb_define_const(mod, "DEFAULT", rb_int2inum(FMOD_DEFAULT));
@@ -140,7 +138,6 @@ void InitConstants()
     rb_define_const(mod, "FMOD_3D_IGNOREGEOMETRY", rb_int2inum(FMOD_3D_IGNOREGEOMETRY));
     rb_define_const(mod, "IGNORETAGS", rb_int2inum(FMOD_IGNORETAGS));
     rb_define_const(mod, "LOWMEM", rb_int2inum(FMOD_LOWMEM));
-    rb_define_const(mod, "LOADSECONDARYRAM", rb_int2inum(FMOD_LOADSECONDARYRAM));
     rb_define_const(mod, "VIRTUAL_PLAYFROMSTART", rb_int2inum(FMOD_VIRTUAL_PLAYFROMSTART));
     // TIMEUNIT
     mod = rb_define_module_under(rb_mFmod, "TIMEUNIT");
@@ -164,24 +161,19 @@ void InitConstants()
     rb_define_const(mod, "WAVWRITER", rb_int2inum(FMOD_OUTPUTTYPE_WAVWRITER));
     rb_define_const(mod, "NOSOUND_NRT", rb_int2inum(FMOD_OUTPUTTYPE_NOSOUND_NRT));
     rb_define_const(mod, "WAVWRITER_NRT", rb_int2inum(FMOD_OUTPUTTYPE_WAVWRITER_NRT));
-    rb_define_const(mod, "DSOUND", rb_int2inum(FMOD_OUTPUTTYPE_DSOUND));
-    rb_define_const(mod, "WINMM", rb_int2inum(FMOD_OUTPUTTYPE_WINMM));
     rb_define_const(mod, "WASAPI", rb_int2inum(FMOD_OUTPUTTYPE_WASAPI));
     rb_define_const(mod, "ASIO", rb_int2inum(FMOD_OUTPUTTYPE_ASIO));
     rb_define_const(mod, "PULSEAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_PULSEAUDIO));
     rb_define_const(mod, "ALSA", rb_int2inum(FMOD_OUTPUTTYPE_ALSA));
     rb_define_const(mod, "COREAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_COREAUDIO));
-    rb_define_const(mod, "XAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_XAUDIO));
-    rb_define_const(mod, "PS3", rb_int2inum(FMOD_OUTPUTTYPE_PS3));
     rb_define_const(mod, "AUDIOTRACK", rb_int2inum(FMOD_OUTPUTTYPE_AUDIOTRACK));
     rb_define_const(mod, "OPENSL", rb_int2inum(FMOD_OUTPUTTYPE_OPENSL));
-    rb_define_const(mod, "WIIU", rb_int2inum(FMOD_OUTPUTTYPE_WIIU));
     rb_define_const(mod, "AUDIOOUT", rb_int2inum(FMOD_OUTPUTTYPE_AUDIOOUT));
     rb_define_const(mod, "AUDIO3D", rb_int2inum(FMOD_OUTPUTTYPE_AUDIO3D));
-    rb_define_const(mod, "ATMOS", rb_int2inum(FMOD_OUTPUTTYPE_ATMOS));
     rb_define_const(mod, "WEBAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_WEBAUDIO));
     rb_define_const(mod, "NNAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_NNAUDIO));
     rb_define_const(mod, "WINSONIC", rb_int2inum(FMOD_OUTPUTTYPE_WINSONIC));
+    rb_define_const(mod, "AAUDIO", rb_int2inum(FMOD_OUTPUTTYPE_AAUDIO));
     // SPEAKERMODE
     mod = rb_define_module_under(rb_mFmod, "SPEAKERMODE");
     rb_define_const(mod, "DEFAULT", rb_int2inum(FMOD_SPEAKERMODE_DEFAULT));
@@ -280,7 +272,6 @@ void InitConstants()
     rb_define_const(mod, "STRING_UTF16", rb_int2inum(FMOD_TAGDATATYPE_STRING_UTF16));
     rb_define_const(mod, "STRING_UTF16BE", rb_int2inum(FMOD_TAGDATATYPE_STRING_UTF16BE));
     rb_define_const(mod, "STRING_UTF8", rb_int2inum(FMOD_TAGDATATYPE_STRING_UTF8));
-    rb_define_const(mod, "CDTOC", rb_int2inum(FMOD_TAGDATATYPE_CDTOC));
     rb_define_const(mod, "MAX", rb_int2inum(FMOD_TAGDATATYPE_MAX));
     // ERROR
     mod = rb_define_module_under(rb_mFmod, "ERR");

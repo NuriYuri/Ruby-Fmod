@@ -23,7 +23,6 @@ void Init_System()
     rb_define_module_function(rb_mFmodSystem, "getRecordPosition", _rbf rb_System_getRecordPosition, 1);
     rb_define_module_function(rb_mFmodSystem, "getSoftwareChannels", _rbf rb_System_getSoftwareChannels, 0);
     rb_define_module_function(rb_mFmodSystem, "getSoftwareFormat", _rbf rb_System_getSoftwareFormat, 0);
-    rb_define_module_function(rb_mFmodSystem, "getSoundRAM", _rbf rb_System_getSoundRAM, 0);
     rb_define_module_function(rb_mFmodSystem, "getSpeakerModeChannels", _rbf rb_System_getSpeakerModeChannels, 1);
     rb_define_module_function(rb_mFmodSystem, "getSpeakerPosition", _rbf rb_System_getSpeakerPosition, 1);
     rb_define_module_function(rb_mFmodSystem, "getStreamBufferSize", _rbf rb_System_getStreamBufferSize, 0);
@@ -283,20 +282,6 @@ VALUE rb_System_getSoftwareFormat(VALUE self)
     rb_ary_push(return_data, rb_int2inum(samplerate));
     rb_ary_push(return_data, rb_int2inum(speakermode));
     rb_ary_push(return_data, rb_int2inum(numrawspeakers));
-    return return_data;
-}
-
-VALUE rb_System_getSoundRAM(VALUE self)
-{
-    int currentalloced;
-    int maxalloced;
-    int total;
-    FMOD_RESULT hr = FMOD_System_GetSoundRAM(FmodSystem, &currentalloced, &maxalloced, &total);
-    CHECK_ERROR
-    VALUE return_data = rb_ary_new();
-    rb_ary_push(return_data, rb_int2inum(currentalloced));
-    rb_ary_push(return_data, rb_int2inum(maxalloced));
-    rb_ary_push(return_data, rb_int2inum(total));
     return return_data;
 }
 
