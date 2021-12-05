@@ -19,7 +19,7 @@ VALUE rb_FmodError_new(VALUE self, VALUE message);
 extern void Init_RubyFmod();
 void Init_RubyFmod()
 {
-    FMOD_RESULT hr = FMOD_System_Create(&FmodSystem);
+    FMOD_RESULT hr = FMOD_System_Create(&FmodSystem, FMOD_VERSION);
     if(hr != FMOD_OK)
         rb_raise(rb_eRuntimeError, "Could not create Fmod System Object : %s", FMOD_ErrorString(hr));
     

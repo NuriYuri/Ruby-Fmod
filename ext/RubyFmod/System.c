@@ -88,19 +88,16 @@ VALUE rb_System_create_Stream(VALUE self, VALUE filename, VALUE mode, VALUE exti
 
 VALUE rb_System_getCPUUsage(VALUE self)
 {
-    float dsp;
-    float stream;
-    float geometry;
-    float update;
-    float total;
-    FMOD_RESULT hr = FMOD_System_GetCPUUsage(FmodSystem, &dsp, &stream, &geometry, &update, &total);
+    FMOD_CPU_USAGE usage = {0};
+    FMOD_RESULT hr = FMOD_System_GetCPUUsage(FmodSystem, &usage);
     CHECK_ERROR
     VALUE return_data = rb_ary_new();
-    rb_ary_push(return_data, rb_float_new(dsp));
-    rb_ary_push(return_data, rb_float_new(stream));
-    rb_ary_push(return_data, rb_float_new(geometry));
-    rb_ary_push(return_data, rb_float_new(update));
-    rb_ary_push(return_data, rb_float_new(total));
+    rb_ary_push(return_data, rb_float_new(usage.dsp));
+    rb_ary_push(return_data, rb_float_new(usage.stream));
+    rb_ary_push(return_data, rb_float_new(usage.geometry));
+    rb_ary_push(return_data, rb_float_new(usage.update));
+    rb_ary_push(return_data, rb_float_new(usage.convolution1));
+    rb_ary_push(return_data, rb_float_new(usage.convolution2));
     return return_data;
 }
 
